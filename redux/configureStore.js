@@ -4,6 +4,7 @@ import logger from 'redux-logger';
 import { dishes } from './dishes';
 import { comments } from './comments';
 import { promotions } from './promotions';
+import { favorites } from './favorites';
 import { leaders } from './leaders';
 
 export const ConfigureStore = () => {
@@ -12,7 +13,8 @@ export const ConfigureStore = () => {
             dishes,
             comments,
             promotions,
-            leaders
+            leaders,
+            favorites
         }),
         applyMiddleware(thunk,logger)
     );

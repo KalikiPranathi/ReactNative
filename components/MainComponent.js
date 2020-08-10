@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Menu from './MenuComponent';
 import Dishdetail from './DishDetailComponent';
 import Home from './HomeComponent';
+import Reservation from './ReservationComponent';
 import Constants from 'expo-constants';
 import { View, Platform, Text, ScrollView, Image, StyleSheet } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -102,6 +103,22 @@ const MenuNavigator = createStackNavigator({
       }
   }
 });
+const ReservationNavigator = createStackNavigator({
+  Reservation: { screen: Reservation }
+}, {
+  navigationOptions: ({ navigation }) => ({
+    headerStyle: {
+        backgroundColor: "#512DA8"
+    },
+    headerTitleStyle: {
+        color: "#fff"            
+    },
+    headerTintColor: "#fff",
+    headerLeft: <Icon name="menu" size={24}
+      iconStyle={{ color: 'white' }} 
+      onPress={ () => navigation.navigate('DrawerToggle') } />    
+  })
+})
 
 const CustomDrawerContentComponent = (props) => (
   <ScrollView>
@@ -179,7 +196,22 @@ const MainNavigator = createDrawerNavigator({
         />
       ),
     }, 
-  }
+  },
+  Reservation:
+    { screen: ReservationNavigator,
+      navigationOptions: {
+        title: 'Reserve Table',
+        drawerLabel: 'Reserve Table',
+        drawerIcon: ({ trackColor, focused }) => (
+          <Icon
+            name='cutlery'
+            type='font-awesome'            
+            size={24}
+            iconStyle={{ color: trackColor }}
+          />
+        ),
+      }
+    }
 }, {
   drawerBackgroundColor: '#D1C4E9',
   contentComponent: CustomDrawerContentComponent
