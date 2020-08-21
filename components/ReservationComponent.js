@@ -4,7 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'moment';
 import { Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
-import { Notifications } from 'expo';
+import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions'
 class Reservation extends Component {
 
@@ -39,7 +39,7 @@ class Reservation extends Component {
 
     async presentLocalNotification(date) {
         await this.obtainNotificationPermission();
-        Notifications.presentLocalNotificationAsync({
+        Notifications.presentNotificationAsync({
             title: 'Your Reservation',
             body: 'Reservation for '+ date + ' requested',
             ios: {
