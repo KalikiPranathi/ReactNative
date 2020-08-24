@@ -6,6 +6,7 @@ import { Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions'
+import * as Calendar from 'expo-calendar';
 class Reservation extends Component {
 
     constructor(props) {
@@ -51,6 +52,44 @@ class Reservation extends Component {
                 color: '#512DA8'
             }
         });
+    }
+
+    async obtainCalendarPermission() {
+        let permission = await Permissions.getAsync(Permissions.CALENDAR);
+        if (permission.status !== 'granted') {
+            permission = await Permissions.askAsync(Permissions.CALENDAR);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to show calender');
+            }
+        }
+        return permission;
+    }
+
+    async addReservationToCalendar(date) {
+        await this.obtainCalendarPermission();
+        let localDate = Date.parse(date)
+        let startDate = new Date(localDate);  
+        let endDate = new Date(localDate + 2 * 60 * 60 * 1000);
+        const defaultCalendarSource =
+        Platform.OS === 'ios'
+          ? await getDefaultCalendarSource()
+          : { isLocalAccount: true, name: 'Expo Calendar' };
+        const check = await Calendar.createCalendarAsync({
+            title: 'Con Fusion Table Reservation',
+            name: 'internalCalendarName',
+            color: 'blue',
+            source: defaultCalendarSource,
+            accessLevel: Calendar.CalendarAccessLevel.OWNER,
+            ownerAccount: 'personal',
+        });
+        await Calendar.createEventAsync(check,{
+            title:'Con Fusion Table Reservation',
+            startDate: startDate,
+            endDate:endDate,
+            timeZone:'Asia/Hong_Kong',
+            location:'121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong',
+        })
+        
     }
 
     resetForm() {
@@ -136,7 +175,7 @@ class Reservation extends Component {
                                 'Number of Guests:'+ this.state.guests +'\n'+'Smoking?: '+ this.state.smoking +'\n' + 'Date and Time: ' + this.state.date.toDateString() + this.state.date.toTimeString() ,
                                 [
                                 {text: 'Cancel', onPress: () => this.resetForm()},
-                                {text: 'OK', onPress: () => {this.presentLocalNotification(this.state.date); this.resetForm()}},
+                                {text: 'OK', onPress: () => {this.presentLocalNotification(this.state.date); this.addReservationToCalendar(this.state.date); this.resetForm()}},
                                 ],
                                 { cancelable: false }
                             );
